@@ -1,13 +1,43 @@
-import express from "express";
+import express from 'express';
+import jwt from 'jsonwebtoken'
+import mongoose from 'mongoose'
 
-const hostname = '127.0.0.1';
-const port = 8080;
+const hostname = '127.0.0.1'; // Хост
+const port = 8080; // Порт
 
+// Подключение к базе данных MongoDB
+mongoose.connect
+
+// Подключение Express
 const app = express();
+
+app.use(express.json()); // Для чтения приходящих http-запросов в json
+
+// Главная страница
 app.get('/', (req, res) => {
-    res.send('11Hello world');
+    res.send('Hello world111');
 });
 
+// Авторизация
+app.post('/auth/login', (req, res) => {
+    // Создание jwt токена
+    const token = jwt.sign(
+        { 
+            email: req.body.email,
+            fullName: req.body.name,
+        },
+        'secret123'
+    );
+
+    res.json({
+        success: true,
+        token
+    });
+    console.log(req.body);
+});
+
+
+// Запуск сервера при отсутствии ошибок
 app.listen(port, (err) => { 
     if(err){
         return console.log(err);
@@ -15,6 +45,7 @@ app.listen(port, (err) => {
     else{
         console.log(`Сервер работает по адресу: http://${hostname}:${port}/`);
     }
+
 });
 
 
