@@ -6,7 +6,9 @@ const hostname = '127.0.0.1'; // Хост
 const port = 8080; // Порт
 
 // Подключение к базе данных MongoDB
-mongoose.connect
+mongoose.connect("mongodb://admin:1q2w3e4r@127.0.0.1:27017/restaurant",)
+.then(() => {console.log('DB is ok')})
+.catch(() => console.log('DB error', err));
 
 // Подключение Express
 const app = express();
