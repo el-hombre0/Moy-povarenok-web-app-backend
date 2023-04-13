@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
 import {registerValidation} from './validations/auth.js';
 import UserModel from './models/User.js';
-
+import bcrypt from 'bcrypt';
 
 const hostname = '127.0.0.1'; // Хост
 const port = 8080; // Порт
@@ -24,12 +24,27 @@ app.get('/', (req, res) => {
     res.send('Hello world111');
 });
 
-app.post('/auth/register', registerValidation, (req, res) => {
+app.post('/auth/register', registerValidation, async (req, res) => {
     const errors = validationResult(req);
     if(!errors.isEmpty()){
         return res.status(400).json(errors.array());
     }
 
+    // Шифрование пароля
+    const password = req.body.password;
+    const salt = bcrypt.genSaltSync(10);
+    const passwordHash = bcrypt.hash(password, salt);
+
+
+
+    const doc = new UserModel({
+            fullName: req.body.fullName,
+            email: req.body.email,
+            passwordHash,
+            avatarUrl: req.body.avatarUrl,
+    });
+
+    
 
     res.json({
         success: true,
