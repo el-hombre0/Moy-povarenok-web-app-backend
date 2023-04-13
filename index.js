@@ -1,6 +1,10 @@
 import express from 'express';
-import jwt from 'jsonwebtoken'
-import mongoose from 'mongoose'
+import { validationResult } from 'express-validator';
+import jwt from 'jsonwebtoken';
+import mongoose from 'mongoose';
+import {registerValidation} from './validations/auth.js';
+import UserModel from './models/User.js';
+
 
 const hostname = '127.0.0.1'; // Хост
 const port = 8080; // Порт
@@ -20,6 +24,17 @@ app.get('/', (req, res) => {
     res.send('Hello world111');
 });
 
+app.post('/auth/register', registerValidation, (req, res) => {
+    const errors = validationResult(req);
+    if(!errors.isEmpty()){
+        return res.status(400).json(errors.array());
+    }
+
+
+    res.json({
+        success: true,
+    });
+});
 // Авторизация
 app.post('/auth/login', (req, res) => {
     // Создание jwt токена
