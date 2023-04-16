@@ -44,7 +44,7 @@ app.post('/auth/register', registerValidation, async (req, res) => {
             avatarUrl: req.body.avatarUrl,
     });
 
-    
+    const user = await doc.save();
 
     res.json({
         success: true,
@@ -79,31 +79,3 @@ app.listen(port, (err) => {
     }
 
 });
-
-
-
-// const server = http1.createServer((req, res) => {
-//     res.statusCode = 200;
-//     res.setHeader("Content-Type", "text/html; charset=utf-8;");
-//     res.write("<!DOCTYPE html>");
-//     res.write("<html>");
-//     res.write("<head>");
-//     res.write("<title>Hello Node.js</title>");
-//     res.write("<meta charset=\"utf-8\" />");
-//     res.write("</head>");
-//     res.write("<body><h2>Привет миг</h2>");
-//     res.write("<h2>Дом</h2>")
-//     res.write("</body>")
-//     res.write("</html>");
-
-//     console.log(`URL: ${req.url}`);
-//     console.log(`Тип запроса: ${req.method}`);
-//     console.log(`User-Agent: ${req.headers["user-agent"]}`);
-//     console.log("Все заголовки:");
-//     console.log(req.headers);
-//     res.end();
-// });
-
-// server.listen(port, hostname, () => {
-//     console.log(`Сервер работает по адресу: http://${hostname}:${port}/`);
-// });
