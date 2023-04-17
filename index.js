@@ -25,6 +25,7 @@ app.get('/', (req, res) => {
 });
 
 app.post('/auth/register', registerValidation, async (req, res) => {
+    // Валидация данных
     const errors = validationResult(req);
     if(!errors.isEmpty()){
         return res.status(400).json(errors.array());
@@ -32,10 +33,12 @@ app.post('/auth/register', registerValidation, async (req, res) => {
 
     // Шифрование пароля
     const password = req.body.password;
-    const salt = bcrypt.genSaltSync(10);
-    const passwordHash = bcrypt.hash(password, salt);
-
-
+    if (password === undefined || password === null){
+        return "password is undefined or null";
+    }
+    
+    const salt = await bcrypt.genSalt(10);
+    const passwordHash = await bcrypt.hash(password, salt);
 
     const doc = new UserModel({
             fullName: req.body.fullName,
@@ -43,12 +46,10 @@ app.post('/auth/register', registerValidation, async (req, res) => {
             passwordHash,
             avatarUrl: req.body.avatarUrl,
     });
-
+ 
     const user = await doc.save();
 
-    res.json({
-        success: true,
-    });
+    res.json(user);
 });
 // Авторизация
 app.post('/auth/login', (req, res) => {
