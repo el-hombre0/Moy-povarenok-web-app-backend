@@ -5,6 +5,7 @@ import mongoose from 'mongoose';
 import { registerValidation } from './validations/auth.js';
 import UserModel from './models/User.js';
 import bcrypt from 'bcrypt';
+import User from './models/User.js';
 
 const hostname = '127.0.0.1'; // Хост
 const port = 8080; // Порт
@@ -24,6 +25,10 @@ app.get('/', (req, res) => {
     res.send('Hello world111');
 });
 
+/**
+ * Регистрация
+ * @async
+ */
 app.post('/auth/register', registerValidation, async (req, res) => {
     try {
         // Валидация данных
@@ -51,7 +56,7 @@ app.post('/auth/register', registerValidation, async (req, res) => {
         // Сохранение документа
         const user = await doc.save();
 
-        // Шифрование в jwt-токене id пользователя
+        /** Шифрование в jwt-токене id пользователя */
         const token = jwt.sign(
             {
                 _id: user._id
@@ -62,7 +67,7 @@ app.post('/auth/register', registerValidation, async (req, res) => {
             },
         );
 
-        // Деструктуризация для того, чтобы убрать passwordHash из вывода
+        /** Деструктуризация для того, чтобы убрать passwordHash из вывода */
         const {passwordHash, ...userData} = user._doc;
 
         res.json({
@@ -71,33 +76,67 @@ app.post('/auth/register', registerValidation, async (req, res) => {
         });
     } catch (error) {
         console.log(error);
-        res.json({
+        res.status(500).json({
             message: "Registration is failed",
             error,
         });
     }
 
 });
-// Авторизация
-app.post('/auth/login', (req, res) => {
-    // Создание jwt токена
-    const token = jwt.sign(
-        {
-            email: req.body.email,
-            fullName: req.body.name,
-        },
-        'secret123'
-    );
 
-    res.json({
-        success: true,
-        token
-    });
-    console.log(req.body);
+/**
+ * Авторизация
+ * @async
+ */
+app.post('/auth/login', async (req, res) => {
+    try{
+        /** Поиск пользователя в БД по email */
+        const user = await UserModel.findOne({email: req.body.email});
+
+        if (!user){
+            return res.status(401).json({
+                message: 'User is not found',
+            });
+        }
+
+        /** Проверка сходимости пароля */
+        const isValidPass = await bcrypt.compare(req.body.password, user._doc.passwordHash);
+        if (!isValidPass){
+            return res.status(401).json({
+                message: 'Incorrect login or password',
+            });
+        }
+
+        /** Шифрование в jwt-токене id пользователя */
+        const token = jwt.sign(
+            {
+                _id: user._id,
+            },
+            'secret123',
+            {
+                expiresIn: '10d'
+            },
+        );
+
+        /** Деструктуризация для того, чтобы убрать passwordHash из вывода */
+        const {passwordHash, ...userData} = user._doc;
+
+        res.json({
+            ...userData,
+            token
+        });
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            message: "Authorisation is failed",
+            error,
+        });
+    }
 });
 
 
-// Запуск сервера при отсутствии ошибок
+/** Запуск сервера */
 app.listen(port, (err) => {
     if (err) {
         return console.log(err);
