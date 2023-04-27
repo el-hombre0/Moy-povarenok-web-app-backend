@@ -6,6 +6,7 @@ import { registerValidation } from './validations/auth.js';
 import UserModel from './models/User.js';
 import bcrypt from 'bcrypt';
 import User from './models/User.js';
+import checkAuth from './utils/checkAuth.js';
 
 const hostname = '127.0.0.1'; // Хост
 const port = 8080; // Порт
@@ -133,6 +134,14 @@ app.post('/auth/login', async (req, res) => {
             error,
         });
     }
+});
+
+
+/**Получение информации о пользователе */
+app.get('/auth/me', checkAuth, (req, res) => {
+    try{
+
+    } catch (error) {}
 });
 
 
