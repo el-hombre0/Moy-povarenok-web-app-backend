@@ -137,11 +137,31 @@ app.post('/auth/login', async (req, res) => {
 });
 
 
-/**Получение информации о пользователе */
-app.get('/auth/me', checkAuth, (req, res) => {
+/**Получение информации о пользователе 
+ * @param checkAuth Декодирование jwt пользователя
+*/
+app.get('/auth/me', checkAuth, async (req, res) => {
     try{
+        const user = await UserModel.findById(req.userId);
+        if (!user) {
+            return res.status(404).json({
+                message: 'User not found',
+            });
+        } else {
+            /** Деструктуризация для того, чтобы убрать passwordHash из вывода */
+            const {passwordHash, ...userData} = user._doc;
 
-    } catch (error) {}
+            return res.json({
+                ...userData,
+            });
+        }
+        
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            message: 'No access'
+        });
+    }
 });
 
 
