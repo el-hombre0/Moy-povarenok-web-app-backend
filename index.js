@@ -6,6 +6,7 @@ import { registerValidation } from './validations/auth.js';
 import UserModel from './models/User.js';
 import bcrypt from 'bcrypt';
 import User from './models/User.js';
+import checkAuth from './utils/checkAuth.js';
 
 const hostname = '127.0.0.1'; // Хост
 const port = 8080; // Порт
@@ -131,6 +132,34 @@ app.post('/auth/login', async (req, res) => {
         res.status(500).json({
             message: "Authorisation is failed",
             error,
+        });
+    }
+});
+
+
+/**Получение информации о пользователе 
+ * @param checkAuth Декодирование jwt пользователя
+*/
+app.get('/auth/me', checkAuth, async (req, res) => {
+    try{
+        const user = await UserModel.findById(req.userId);
+        if (!user) {
+            return res.status(404).json({
+                message: 'User not found',
+            });
+        } else {
+            /** Деструктуризация для того, чтобы убрать passwordHash из вывода */
+            const {passwordHash, ...userData} = user._doc;
+
+            return res.json({
+                ...userData,
+            });
+        }
+        
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            message: 'No access'
         });
     }
 });
