@@ -2,7 +2,7 @@ import express from 'express';
 import { validationResult } from 'express-validator';
 import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
-import { registerValidation } from './validations/auth.js';
+import { registerValidation, loginValidation } from './validations.js';
 import UserModel from './models/User.js';
 import bcrypt from 'bcrypt';
 import User from './models/User.js';
@@ -37,7 +37,7 @@ app.post('/auth/register', registerValidation, UserController.register);
  * Авторизация
  * @async
  */
-app.post('/auth/login', UserController.login);
+app.post('/auth/login', loginValidation, UserController.login);
 
 
 /**
