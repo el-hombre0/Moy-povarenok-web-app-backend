@@ -17,5 +17,5 @@ export const dishCreateValidation = [
     body('price', 'The price must be a float number!').optional().isFloat(),
     body('description', 'The description\'s length must be at least 10 characters!').isLength({min: 5}).isString(),
     body('imageUrl', 'The image must be a URL!').optional().isURL(),
-    body('tag', 'The tags enumeration must be a string!').optional().isString()
+    body('tags', 'The tags enumeration must be a string!').optional().isString()
 ];

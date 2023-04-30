@@ -8,6 +8,8 @@ import bcrypt from 'bcrypt';
 import User from './models/User.js';
 import checkAuth from './utils/checkAuth.js';
 import * as UserController from './controllers/UserController.js';
+import * as DishController from './controllers/DishController.js';
+import { dishCreateValidation } from './validations.js';
 
 const hostname = '127.0.0.1'; // Хост
 const port = 8080; // Порт
@@ -26,6 +28,13 @@ app.use(express.json()); // Для чтения приходящих http-зап
 app.get('/', (req, res) => {
     res.send('Hello world111');
 });
+
+app.get('/dishes', DishController.getAll);
+// app.get('/dishes/:id', DishController.getOne);
+app.post('/dishes', checkAuth, dishCreateValidation, DishController.create);
+// app.delete('/dishes', DishController.remove);
+// app.patch('/dishes', DishController.update);
+
 
 /**
  * Регистрация
