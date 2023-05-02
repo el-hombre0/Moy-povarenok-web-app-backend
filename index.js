@@ -10,51 +10,68 @@ import checkAuth from './utils/checkAuth.js';
 import * as UserController from './controllers/UserController.js';
 import * as DishController from './controllers/DishController.js';
 import { dishCreateValidation } from './validations.js';
+import multer from 'multer';
 
-const hostname = '127.0.0.1'; // Хост
-const port = 8080; // Порт
+const hostname = '127.0.0.1';
+const port = 8080;
 
-// Подключение к базе данных MongoDB
+/** Подключение к базе данных MongoDB */ 
 mongoose.connect("mongodb://admin:1q2w3e4r@127.0.0.1:27017/restaurant",)
     .then(() => { console.log('DB is ok') })
     .catch(() => console.log('DB error', err));
 
-// Подключение Express
+/** Подключение Express */ 
 const app = express();
 
-app.use(express.json()); // Для чтения приходящих http-запросов в json
+/** Хранилище для изображений */
+const storage = new multer.diskStorage({
+    destination: (_, __, cb) => {
+        cb(null, 'uploads');
+    },
+    filename: (_, file, cb) => {
+        cb(null, file.originalname);
+    },
+});
 
-// Главная страница
+/** Передача хранилища в multer */
+const upload = multer({storage});
+
+/** Чтение приходящих http-запросов в json */
+app.use(express.json()); 
+
+/** Выдача статичных файлов по запросу */
+app.use('/uploads', express.static('uploads'));
+
+/** Главная страница */ 
 app.get('/', (req, res) => {
     res.send('Hello world111');
 });
 
+/** Маршрутизация блюд (CRUD) */
 app.get('/dishes', DishController.getAll);
 app.get('/dishes/:id', DishController.getOne);
 app.post('/dishes', checkAuth, dishCreateValidation, DishController.create);
 app.delete('/dishes/:id', checkAuth, DishController.remove);
-app.patch('/dishes/:id', checkAuth, DishController.update);
+app.patch('/dishes/:id', checkAuth, dishCreateValidation, DishController.update);
 
 
-/**
- * Регистрация
- * @async
- */
+/** Регистрация */
 app.post('/auth/register', registerValidation, UserController.register);
 
-/**
- * Авторизация
- * @async
- */
+/** Авторизация */
 app.post('/auth/login', loginValidation, UserController.login);
 
-
-/**
- * Получение информации о пользователе 
- * @param checkAuth Декодирование jwt пользователя
-*/
+/** Получение информации о пользователе */
 app.get('/auth/me', checkAuth, UserController.getMe);
 
+
+/** Маршрут для загрузки изображений */
+app.post('/uploads', checkAuth, upload.single('image'), (req, res) => {
+    /** Пользователю отдаётся путь к загруженному им файлу*/
+    res.json({
+        url: `/uploads/${req.file.originalname}`,
+    });
+});
 
 /** Запуск сервера */
 app.listen(port, (err) => {
