@@ -30,10 +30,10 @@ app.get('/', (req, res) => {
 });
 
 app.get('/dishes', DishController.getAll);
-// app.get('/dishes/:id', DishController.getOne);
+app.get('/dishes/:id', DishController.getOne);
 app.post('/dishes', checkAuth, dishCreateValidation, DishController.create);
-// app.delete('/dishes', DishController.remove);
-// app.patch('/dishes', DishController.update);
+app.delete('/dishes/:id', checkAuth, DishController.remove);
+app.patch('/dishes/:id', checkAuth, DishController.update);
 
 
 /**
