@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-
+/** Модель пользователя */
 const UserSchema = new mongoose.Schema({
     fullName: {
         type: String,
@@ -18,7 +18,7 @@ const UserSchema = new mongoose.Schema({
     avatarUrl: String,
 },
 {
-    // Временные метки при создании/изменении пользователя
+    /** Временные метки при создании/изменении пользователя */
     timestamps: true,
 });
 

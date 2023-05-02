@@ -1,17 +1,10 @@
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
-import { validationResult } from 'express-validator';
 import UserModel from '../models/User.js';
 
 export const register = async (req, res) => {
-    try {
-        // Валидация данных
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            return res.status(400).json(errors.array());
-        }
-
-        // Шифрование пароля
+    try {   
+        /** Шифрование пароля */
         const password = req.body.password;
         if (password === undefined || password === null) {
             return "password is undefined or null";
@@ -19,7 +12,7 @@ export const register = async (req, res) => {
         const salt = await bcrypt.genSalt(10);
         const hash = await bcrypt.hash(password, salt);
 
-        // Создание документа - модели пользователя
+        /** Создание документа - модели пользователя */ 
         const doc = new UserModel({
             fullName: req.body.fullName,
             email: req.body.email,
@@ -27,7 +20,7 @@ export const register = async (req, res) => {
             avatarUrl: req.body.avatarUrl,
         });
 
-        // Сохранение документа
+        /** Сохранение документа */
         const user = await doc.save();
 
         /** Шифрование в jwt-токене id пользователя */

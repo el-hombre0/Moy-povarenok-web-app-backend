@@ -1,15 +1,11 @@
 import express from 'express';
-import { validationResult } from 'express-validator';
-import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
 import { registerValidation, loginValidation } from './validations.js';
-import UserModel from './models/User.js';
-import bcrypt from 'bcrypt';
-import User from './models/User.js';
 import checkAuth from './utils/checkAuth.js';
 import * as UserController from './controllers/UserController.js';
 import * as DishController from './controllers/DishController.js';
 import { dishCreateValidation } from './validations.js';
+import handleValidationErrors from './utils/handleValidationErrors.js';
 import multer from 'multer';
 
 const hostname = '127.0.0.1';
@@ -50,16 +46,16 @@ app.get('/', (req, res) => {
 /** Маршрутизация блюд (CRUD) */
 app.get('/dishes', DishController.getAll);
 app.get('/dishes/:id', DishController.getOne);
-app.post('/dishes', checkAuth, dishCreateValidation, DishController.create);
+app.post('/dishes', checkAuth, dishCreateValidation, handleValidationErrors, DishController.create);
 app.delete('/dishes/:id', checkAuth, DishController.remove);
-app.patch('/dishes/:id', checkAuth, dishCreateValidation, DishController.update);
+app.patch('/dishes/:id', checkAuth, dishCreateValidation, handleValidationErrors, DishController.update);
 
 
 /** Регистрация */
-app.post('/auth/register', registerValidation, UserController.register);
+app.post('/auth/register', registerValidation, handleValidationErrors, UserController.register);
 
 /** Авторизация */
-app.post('/auth/login', loginValidation, UserController.login);
+app.post('/auth/login', loginValidation, handleValidationErrors, UserController.login);
 
 /** Получение информации о пользователе */
 app.get('/auth/me', checkAuth, UserController.getMe);

@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-
+/** Модель блюда */
 const DishSchema = new mongoose.Schema({
     title: {
         type: String,

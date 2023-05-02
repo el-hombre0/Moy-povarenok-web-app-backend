@@ -1,4 +1,3 @@
-import Dish from '../models/Dish.js';
 import DishModel from '../models/Dish.js';
 /**
  * Создание статьи

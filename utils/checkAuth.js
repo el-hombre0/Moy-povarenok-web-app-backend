@@ -3,7 +3,8 @@ import jwt from 'jsonwebtoken';
 
 /**
  * Проверка авторизации
- * @deatil Декодирование токена
+ * @detail Декодирование токена
+ * @param next Функция перехода к следующему callback
  */
 export default (req, res, next) => {
     const token = (req.headers.authorization || '').replace(/Bearer\s?/, '');
