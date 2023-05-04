@@ -1,12 +1,13 @@
 import express from 'express';
 import mongoose from 'mongoose';
-import { registerValidation, loginValidation } from './validations.js';
-import checkAuth from './utils/checkAuth.js';
-import * as UserController from './controllers/UserController.js';
-import * as DishController from './controllers/DishController.js';
-import { dishCreateValidation } from './validations.js';
-import handleValidationErrors from './utils/handleValidationErrors.js';
 import multer from 'multer';
+
+import { registerValidation, loginValidation, dishCreateValidation } from './validations.js';
+
+import { UserController, DishController } from './controllers/index.js';
+
+import { checkAuth, handleValidationErrors } from './utils/index.js';
+
 
 const hostname = '127.0.0.1';
 const port = 8080;
