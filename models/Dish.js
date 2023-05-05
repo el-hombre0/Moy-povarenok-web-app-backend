@@ -8,8 +8,8 @@ const DishSchema = new mongoose.Schema({
         unique: true,
     },
 
-    price: {
-        type: Number,
+    cookingtime: {
+        type: String,
         required: true,
     },
 
@@ -21,6 +21,11 @@ const DishSchema = new mongoose.Schema({
     imageUrl: String,
     
     tags: {
+        type: Array,
+        default: [],
+    },
+
+    ingredients: {
         type: Array,
         default: [],
     },

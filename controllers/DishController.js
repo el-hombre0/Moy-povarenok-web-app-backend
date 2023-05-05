@@ -1,6 +1,6 @@
 import DishModel from '../models/Dish.js';
 /**
- * Создание статьи
+ * Создание блюда
  * @param {*} req Запрос от клиента
  * @param {*} res Ответ от сервера
  */
@@ -8,9 +8,10 @@ export const create = async (req, res) => {
     try {
         const doc = new DishModel({
             title: req.body.title,
-            price: req.body.price,
+            cookingtime: req.body.cookingtime,
             description: req.body.description,
             imageUrl: req.body.imageUrl,
+            ingredients: req.body.ingredients,
             tags: req.body.tags,
             user: req.userId,
         });
@@ -26,7 +27,7 @@ export const create = async (req, res) => {
 };
 
 /**
- * Получение всех статей
+ * Получение всех блюд
  * @param {*} req Запрос от клиента
  * @param {*} res Ответ от сервера
  */
@@ -46,7 +47,7 @@ export const getAll = async (req, res) => {
 };
 
 /**
- * Получение одной статьи
+ * Получение одной блюда
  * @param {*} req Запрос от клиента
  * @param {*} res Ответ от сервера
  */
@@ -68,7 +69,7 @@ export const getOne = async (req, res) => {
 };
 
 /**
- * Удаление статьи
+ * Удаление блюда
  * @param {*} req Запрос от клиента
  * @param {*} res Ответ от сервера
  */
@@ -111,10 +112,11 @@ export const update = (req, res) => {
         },
         {
             title: req.body.title,
-            price: req.body.price,
+            cookingtime: req.body.cookingtime,
             description: req.body.description,
             imageUrl: req.body.imageUrl,
             tags: req.body.tags,
+            ingredients: req.body.ingredients,
             user: req.userId,
         })
         .then((doc)=>{
