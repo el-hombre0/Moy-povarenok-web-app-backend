@@ -1,6 +1,7 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import multer from 'multer';
+import cors from 'cors';
 
 import { registerValidation, loginValidation, dishCreateValidation } from './validations.js';
 
@@ -35,6 +36,9 @@ const upload = multer({storage});
 
 /** Чтение приходящих http-запросов в json */
 app.use(express.json()); 
+
+/** Отключение механизма блокировки доступа с другого адреса CORS */
+app.use(cors());
 
 /** Выдача статичных файлов по запросу */
 app.use('/uploads', express.static('uploads'));
