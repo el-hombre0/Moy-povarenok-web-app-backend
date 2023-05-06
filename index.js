@@ -55,6 +55,10 @@ app.post('/dishes', checkAuth, dishCreateValidation, handleValidationErrors, Dis
 app.delete('/dishes/:id', checkAuth, DishController.remove);
 app.patch('/dishes/:id', checkAuth, dishCreateValidation, handleValidationErrors, DishController.update);
 
+app.get('/dishes/tags', DishController.getLastTags);
+
+/** Маршрут для получения 5 последних тэгов*/
+app.get('/tags', DishController.getLastTags);
 
 /** Регистрация */
 app.post('/auth/register', registerValidation, handleValidationErrors, UserController.register);

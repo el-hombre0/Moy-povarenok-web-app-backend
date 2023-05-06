@@ -137,3 +137,26 @@ export const update = (req, res) => {
         });
     }
 }
+
+/**
+ * Получение тэгов из последних 5 статей
+ */
+export const getLastTags = async (req, res) => {
+    try {
+        
+        const dishes = await DishModel.find().limit(5).exec();
+        /** Берёт все статьи из массива данных блюда. 
+         * С помощью flat() происходит конкатенация тэгов. 
+         * Берутся полседние 5
+         * */
+        const tags = dishes.map(obj => obj.tags).flat().slice(0, 5);
+
+        res.json(tags);
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({
+            message: "Failed to get all dishes!",
+        });
+    }
+};
+
