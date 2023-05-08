@@ -1,7 +1,7 @@
 {
-  "name": "web_restaurant",
+  "name": "moy-povarenok-web-app-backend",
   "version": "1.0.0",
-  "description": "Web-application for restaurant",
+  "description": "Web-application for cooking",
   "main": "index.js",
   "type": "module",
   "scripts": {
