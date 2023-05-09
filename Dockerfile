@@ -2,7 +2,7 @@
 FROM node:18
 
 # Create App Directory
-RUN mkdir -p /usr/src/app
+# RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 
 # Install Dependencies
@@ -14,5 +14,4 @@ RUN npm install --silent
 COPY . .
 
 EXPOSE 8080
-# CMD [ "node", "index.js" ]
-CMD ["npm","start"]
+CMD ["npm", "run", "start"]
