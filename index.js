@@ -20,7 +20,8 @@ const port = 8080;
 
 /** Подключение к базе данных MongoDB */
 mongoose
-  .connect("mongodb+srv://admin:1q2w3e4r@cluster0.bnsol1r.mongodb.net/moy-povarenok?retryWrites=true&w=majority")
+  //   .connect("mongodb+srv://admin:1q2w3e4r@cluster0.bnsol1r.mongodb.net/moy-povarenok?retryWrites=true&w=majority")
+  .connect("mongodb://user:1q2w3e4r@127.0.0.1:27017/moy-povarenok")
   .then(() => {
     console.log("DB is ok");
   })
@@ -117,7 +118,6 @@ app.listen(port, (err) => {
 });
 
 // GRAPHQL API
-
 
 // let schema = buildSchema(`
 //   type Query {
