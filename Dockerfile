@@ -1,8 +1,18 @@
+#  Dockerfile for Node Express Backend
 FROM node:18
-WORKDIR /usr/src/app/
+
+# Create App Directory
+RUN mkdir -p /usr/src/app
+WORKDIR /usr/src/app
+
+# Install Dependencies
 COPY package*.json ./
-RUN npm install
+RUN npm install --silent
 # RUN npm ci --omit=dev
+
+# Copy app source code
 COPY . .
+
 EXPOSE 8080
-CMD [ "node", "index.js" ]
+# CMD [ "node", "index.js" ]
+CMD ["npm","start"]

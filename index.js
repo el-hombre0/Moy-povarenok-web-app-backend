@@ -14,7 +14,7 @@ const hostname = '127.0.0.1';
 const port = 8080;
 
 /** Подключение к базе данных MongoDB */ 
-mongoose.connect("mongodb://admin:1q2w3e4r@127.0.0.1:27017/restaurant",)
+mongoose.connect("mongodb://admin:1q2w3e4r@127.0.0.1:27017/moy-povarenok",)
     .then(() => { console.log('DB is ok') })
     .catch(() => console.log('DB error', err));
 

@@ -1,0 +1,65 @@
+version: '3.7'
+
+services:
+  
+  server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: Moy-povarenok-server-img
+    container_name: Moy-povarenok-server-cont
+    command: /usr/src/app/node_modules/.bin/nodemon server.js
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mongo
+    # env_file: ./Moy-povarenok-web-app-backend/.env
+    environment:
+      - NODE_ENV=development
+    networks:
+      - app-network
+  
+  mongo:
+    image: mongo
+    container_name: mongodb
+    volumes:
+      # - ./db/mongo-init.js:/data/db
+      - ./db/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: 1q2w3e4r
+      MONGO_INITDB_DATABASE: moy-povarenok
+    networks:
+      - app-network
+  
+  client:
+    build:
+      context: ../Moy-povarenok-web-app-frontend
+      dockerfile: Dockerfile
+    image: Moy-povarenok-client-img
+    container_name: Moy-povarenok-client-cont
+    command: npm start
+    volumes:
+      - ../Moy-povarenok-web-app-frontend/:/usr/app
+      - /usr/app/node_modules
+    depends_on:
+      - server
+    ports:
+      - "3000:3000"
+    networks:
+      - app-network
+
+networks:
+    app-network:
+        driver: bridge
+
+volumes:
+    data-volume:
+    node_modules:
+    web-root:
+      driver: local
