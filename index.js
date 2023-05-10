@@ -2,9 +2,11 @@ import express from "express";
 import mongoose from "mongoose";
 import multer from "multer";
 import cors from "cors";
+import { ApolloServer } from "apollo-server";
 import graphqlHTTP from "express-graphql";
 import buildSchema from "graphql";
-
+import { typeDefs } from "./graphql/schema/type-defs.js";
+import { resolvers } from "./graphql/schema/resolvers.js";
 import {
   registerValidation,
   loginValidation,
@@ -17,15 +19,14 @@ import { checkAuth, handleValidationErrors } from "./utils/index.js";
 
 const hostname = "127.0.0.1";
 const port = 8080;
-
+const MONGODB = "mongodb://admin:1q2w3e4r@127.0.0.1:27017/moy-povarenok";
 /** Подключение к базе данных MongoDB */
 mongoose
-  //   .connect("mongodb+srv://admin:1q2w3e4r@cluster0.bnsol1r.mongodb.net/moy-povarenok?retryWrites=true&w=majority")
-  .connect("mongodb://user:1q2w3e4r@127.0.0.1:27017/moy-povarenok")
+  .connect(MONGODB)
   .then(() => {
     console.log("DB is ok");
   })
-  .catch(() => console.log("DB error", err));
+  .catch((err) => console.log("DB error", err));
 
 /** Подключение Express */
 const app = express();
@@ -119,24 +120,8 @@ app.listen(port, (err) => {
 
 // GRAPHQL API
 
-// let schema = buildSchema(`
-//   type Query {
-//     postTitle: String,
-//     blogTitle: String
-//   }
-// `);
+const server = new ApolloServer({ typeDefs, resolvers });
 
-// let root = {
-//     postTitle: () => {
-//         return 'Build a Simple GraphQL Server With Express and NodeJS';
-//     },
-//     blogTitle: () => {
-//         return 'scotch.io';
-//     }
-// }
-
-// app.use('/', graphqlHTTP({
-//     schema: schema,
-//     rootValue: root,
-//     graphiql: true
-// }));
+server.listen().then(({ url }) => {
+  console.log(`APOLLO API IS RUNNING AT ${url}`);
+});
