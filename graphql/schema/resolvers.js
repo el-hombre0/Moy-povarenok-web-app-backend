@@ -5,8 +5,6 @@ import jwt from "jsonwebtoken";
 
 export const resolvers = {
   Query: {
-
-
     /** Пользователи */
     async user(_, { ID }) {
       return await User.findById(ID);
@@ -18,33 +16,33 @@ export const resolvers = {
 
     async loginUser(_, { loginUserInput: { email, password } }) {
       const user = await User.findOne({ email: email });
-      if (!user){
-        return status(404).json({
-            message: "User not found",
-          });
+      if (!user) {
+        return {
+          message: "User not found",
+        };
       }
-      console.log({user});
-      const isValidPass = await bcrypt.compare(
-        password,
-        user._doc.passwordHash
-      );
-      if (!isValidPass) {
-        return status(401).json({
-          message: "Incorrect login or password",
-        });
+    //   console.log({ user });
+      const salt = await bcrypt.genSalt(10);
+      const hash = await bcrypt.hash(password, salt);
+    //   const isValidPass = await bcrypt.compare(
+    //     password,
+    //     User.findOne({ email: email }).passwordHash
+    //   );
+    //   console.log(isValidPass);
+      if (user.passwordHash != hash) {
+        return { message: "Incorrect login or password" };
       }
       const token = jwt.sign(
         {
-          _id: foundUser._id,
+          _id: user._id,
         },
         "secret123",
         {
           expiresIn: "10d",
         }
       );
-      return { foundUser, token };
+      return{user} 
     },
-
 
     /** Блюда */
     async dish(_, { ID }) {
