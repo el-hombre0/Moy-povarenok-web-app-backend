@@ -15,9 +15,10 @@ import {
 
 import { UserController, DishController } from "./controllers/index.js";
 
-import { checkAuth, handleValidationErrors } from "./utils/index.js";
+import { checkAuth, checkRole, handleValidationErrors } from "./utils/index.js";
 
 const hostname = "127.0.0.1";
+// const hostname = "45.12.238.14";
 const port = 8080;
 const MONGODB = "mongodb://admin:1q2w3e4r@127.0.0.1:27017/moy-povarenok";
 /** Подключение к базе данных MongoDB */
@@ -100,6 +101,8 @@ app.post(
 
 /** Получение информации о пользователе */
 app.get("/auth/me", checkAuth, UserController.getMe);
+
+app.get("/profile/users/", checkAuth, checkRole(["ADMIN"]), UserController.getAll);
 
 /** Маршрут для загрузки изображений */
 app.post("/uploads", checkAuth, upload.single("image"), (req, res) => {
