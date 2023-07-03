@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-
 /** Модель пользователя */
 const UserSchema = new mongoose.Schema({
     fullName: {
@@ -16,6 +15,11 @@ const UserSchema = new mongoose.Schema({
         required: true,
     },
     avatarUrl: String,
+    roles: {
+        type: Array,
+        default: [],
+        ref: 'Role',
+    }
 },
 {
     /** Временные метки при создании/изменении пользователя */

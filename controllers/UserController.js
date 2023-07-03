@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import UserModel from '../models/User.js';
+import Role from '../models/Role.js';
 
 export const register = async (req, res) => {
     try {   
@@ -12,12 +13,14 @@ export const register = async (req, res) => {
         const salt = await bcrypt.genSalt(10);
         const hash = await bcrypt.hash(password, salt);
 
+        const userRole = await Role.findOne({value: "USER"});
         /** Создание документа - модели пользователя */ 
         const doc = new UserModel({
             fullName: req.body.fullName,
             email: req.body.email,
             passwordHash: hash,
             avatarUrl: req.body.avatarUrl,
+            roles: [userRole.value],
         });
 
         /** Сохранение документа */
@@ -26,7 +29,8 @@ export const register = async (req, res) => {
         /** Шифрование в jwt-токене id пользователя */
         const token = jwt.sign(
             {
-                _id: user._id
+                _id: user._id,
+                roles: user.roles,
             },
             'secret123',
             {
@@ -52,6 +56,11 @@ export const register = async (req, res) => {
 
 export const login = async (req, res) => {
     try{
+        // const roleUser = new Role();
+        // const roleAdmin = new Role({value: 'ADMIN'});
+        // await roleUser.save();
+        // await roleAdmin.save();
+
         /** Поиск пользователя в БД по email */
         const user = await UserModel.findOne({email: req.body.email});
 
@@ -73,6 +82,7 @@ export const login = async (req, res) => {
         const token = jwt.sign(
             {
                 _id: user._id,
+                roles: user.roles,
             },
             'secret123',
             {
@@ -91,7 +101,7 @@ export const login = async (req, res) => {
     } catch (error) {
         console.log(error);
         res.status(500).json({
-            message: "Authorisation is failed",
+            message: "Authorization is failed",
             error,
         });
     }
@@ -113,6 +123,26 @@ export const getMe = async (req, res) => {
             });
         }
         
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            message: 'No access'
+        });
+    }
+}
+
+export const getAll = async (req, res) => {
+    try {
+        const users = await UserModel.find();
+        if (!users) {
+            return res.status(404).json({
+                message: 'There is no any users',
+            });
+        } else {
+            return res.json({
+                users,
+            });
+        }
     } catch (error) {
         console.log(error);
         res.status(500).json({

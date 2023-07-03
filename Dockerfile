@@ -7,7 +7,7 @@ WORKDIR /usr/src/app
 
 # Install Dependencies
 COPY package*.json ./
-RUN npm install --silent
+RUN npm install --silent --legacy-peer-deps
 # RUN npm ci --omit=dev
 
 # Copy app source code
