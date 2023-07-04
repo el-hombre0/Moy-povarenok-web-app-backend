@@ -3,8 +3,6 @@ import mongoose from "mongoose";
 import multer from "multer";
 import cors from "cors";
 import { ApolloServer } from "apollo-server";
-import graphqlHTTP from "express-graphql";
-import buildSchema from "graphql";
 import { typeDefs } from "./graphql/schema/type-defs.js";
 import { resolvers } from "./graphql/schema/resolvers.js";
 import {
@@ -20,14 +18,16 @@ import { checkAuth, checkRole, handleValidationErrors } from "./utils/index.js";
 const hostname = "127.0.0.1";
 // const hostname = "45.12.238.14";
 const port = 8080;
-const MONGODB = "mongodb://admin:1q2w3e4r@127.0.0.1:27017/moy-povarenok";
+const MONGODB = "mongodb://user:user@mongodb:27017/moy-povarenok?retryWrites=true&w=majority"; // Для Docker
+// const MONGODB = "mongodb://user:user@127.0.0.1:27017/moy-povarenok?retryWrites=true&w=majority"; // Для локального запуска
+
 /** Подключение к базе данных MongoDB */
 mongoose
   .connect(MONGODB)
   .then(() => {
     console.log("DB is ok");
   })
-  .catch((err) => console.log("DB error", err));
+  .catch((err) => console.log("DB error", MONGODB, err));
 
 /** Подключение Express */
 const app = express();

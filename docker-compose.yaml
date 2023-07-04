@@ -5,51 +5,50 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: moy-povarenok-server-img
-    container_name: moy-povarenok-server-cont
+    image: mp-server-i
+    container_name: mp-server-c
     volumes:
-      - .:/usr/src/app
+      - .:/usr/app/server
     ports:
       - "8080:8080"
     depends_on:
       - mongodb
     environment:
       - NODE_ENV=development
-    networks:
-      - app-network
+    # networks:
+    #   - app-network
   
   mongodb:
     image: mongo:latest
-    container_name: mongodb
+    container_name: mongo-c
     volumes:
-      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js
     ports:
       - "27017:27017"
     environment:
       MONGO_INITDB_ROOT_USERNAME: admin
       MONGO_INITDB_ROOT_PASSWORD: 1q2w3e4r
-      MONGO_INITDB_DATABASE: moy-povarenok
-    networks:
-      - app-network
+    # networks:
+    #   - app-network
   
   client:
     build:
-      context: ../moy-povarenok-web-app-frontend
+      context: ../Moy-povarenok-web-app-frontend
       dockerfile: Dockerfile
-    image: moy-povarenok-client-img
-    container_name: moy-povarenok-client-cont
+    image: mp-client-i
+    container_name: mp-client-c
     volumes:
-      - ../moy-povarenok-web-app-frontend/:/usr/app
+      - ../Moy-povarenok-web-app-frontend/:/usr/app/client
     depends_on:
       - server
     ports:
       - "3000:3000"
-    networks:
-      - app-network
-
-networks:
-    app-network:
-        driver: bridge
+    # networks:
+    #   - app-network
+ 
+# networks:
+#     app-network:
+#         driver: bridge
 
 volumes:
     data-volume:

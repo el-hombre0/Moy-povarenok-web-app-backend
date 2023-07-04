@@ -5,6 +5,10 @@ import Role from '../models/Role.js';
 
 export const register = async (req, res) => {
     try {   
+        // const roleUser = new Role();
+        // const roleAdmin = new Role({value: 'ADMIN'});
+        // await roleUser.save();
+        // await roleAdmin.save();
         /** Шифрование пароля */
         const password = req.body.password;
         if (password === undefined || password === null) {
@@ -56,10 +60,6 @@ export const register = async (req, res) => {
 
 export const login = async (req, res) => {
     try{
-        // const roleUser = new Role();
-        // const roleAdmin = new Role({value: 'ADMIN'});
-        // await roleUser.save();
-        // await roleAdmin.save();
 
         /** Поиск пользователя в БД по email */
         const user = await UserModel.findOne({email: req.body.email});
